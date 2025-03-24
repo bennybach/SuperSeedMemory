@@ -19,7 +19,7 @@ let cards = [];
 let flippedCards = [];
 let matchedPairs = 0;
 let score = 0;
-let timeLeft = 300;
+let timeLeft = 100;
 let timer;
 let scoreboard = JSON.parse(localStorage.getItem('scoreboard')) || [];
 let gameActive = true;
@@ -334,7 +334,7 @@ function startGame() {
     }
     startButton.disabled = true;
     score = 0;
-    timeLeft = 300;
+    timeLeft = 100;
     matchedPairs = 0;
     flippedCards = [];
     gameActive = true;
