@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperSeed Memory</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>SuperSeed Memory</h1>
+        <div class="controls">
+            <input type="text" id="username" placeholder="Enter your username">
+            <button id="startButton">Start Game</button>
+            <div id="timer">Time: 90s</div>
+            <div id="score">Score: 0</div>
+        </div>
+        <div class="game-wrapper">
+            <div id="gameBoard" class="game-board"></div>
+            <div class="sidebar">
+                <div class="rules">
+                    <h2>Rules</h2>
+                    <p>Get as many points in 90 seconds by finding the Seeds and the Super Seeds on the board.</p>
+                    <p>Each pair of Seeds grants you 3 seconds extra time and 3 points.</p>
+                    <p>Each pair of Super Seeds grants you 15 seconds extra time and 10 points.</p>
+                    <p>All other cryptocurrencies are worth 1 point and grant no extra time.</p>
+                    <p>If you clear the board with time to spare each remaining second is worth 5 points</p>
+                </div>
+                <div id="scoreboard">
+                    <h2>Scoreboard</h2>
+                    <ul id="scoreList"></ul>
+                </div>
+            </div>
+        </div>
+        <div id="message"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
