@@ -5,12 +5,14 @@ const scoreDisplay = document.getElementById('score');
 const usernameInput = document.getElementById('username');
 const scoreList = document.getElementById('scoreList');
 const messageDisplay = document.getElementById('message');
+const highScoreMessageDisplay = document.getElementById('high-score-message');
+const topScorerImageDisplay = document.getElementById('top-scorer-image');
 
 let cards = [];
 let flippedCards = [];
 let matchedPairs = 0;
 let score = 0;
-let timeLeft = 80;
+let timeLeft = 100;
 let timer;
 let scoreboard = JSON.parse(localStorage.getItem('scoreboard')) || [];
 let gameActive = true;
@@ -175,6 +177,7 @@ function endGame(won) {
         updateScoreboard(username, score);
         messageDisplay.textContent = `Time’s up! Game Over. Final Score: ${score}`;
         messageDisplay.classList.add('game-over-message');
+        displayMessage(username, false);
     }
 }
 
@@ -196,20 +199,33 @@ function renderScoreboard() {
 }
 
 function displayMessage(username, won) {
-    const isTopScorer = scoreboard[0]?.username === username && scoreboard[0]?.score === score;
-    if (won && isTopScorer) {
-        messageDisplay.textContent = `Congratulations, ${username}! You won and are the top scorer! Final Score: ${score}`;
-        messageDisplay.classList.add('top-score-won');
-    } else if (won) {
-        messageDisplay.textContent = `Congratulations, ${username}! You won! Final Score: ${score}`;
-        messageDisplay.classList.add('game-won');
-    } else if (isTopScorer) {
-        messageDisplay.textContent = `Great job, ${username}! You’re the top scorer! Final Score: ${score}`;
-        messageDisplay.classList.add('top-score');
-    }
-    setTimeout(() => messageDisplay.classList.remove('top-score', 'game-won', 'top-score-won'), 1500);
-}
+      const isTopScorer = scoreboard.length > 0 && scoreboard[0]?.username === username && scoreboard[0]?.score === score;
 
+   highScoreMessageDisplay.textContent = '';
+    highScoreMessageDisplay.classList.remove('high-score', 'game-won', 'top-score-won');
+    topScorerImageDisplay.innerHTML = ''; // Clear previous image
+
+    // Display messages in high-score-message based on conditions
+    if (won && isTopScorer) {
+        highScoreMessageDisplay.textContent = `Incredible, ${username}! You cleared all cards and set a new high score!`;
+        highScoreMessageDisplay.classList.add('top-score-won');
+
+        // Add the top scorer image
+        const img = document.createElement('img');
+        img.src = 'top-scorer-award.png';
+        img.alt = 'Top Scorer Award';
+        img.classList.add('top-scorer-award');
+        topScorerImageDisplay.appendChild(img);
+    } else if (won) {
+        highScoreMessageDisplay.textContent = `Well done, ${username}! You cleared all cards!`;
+        highScoreMessageDisplay.classList.add('game-won');
+    } else if (isTopScorer) {
+        highScoreMessageDisplay.textContent = `Congratulations, ${username}! You set a new high score!`;
+        highScoreMessageDisplay.classList.add('high-score');
+    }
+
+    messageDisplay.classList.remove('top-score', 'game-won', 'top-score-won');
+}
 function startGame() {
     if (!usernameInput.value.trim()) {
         alert('Please enter a username!');
@@ -217,7 +233,7 @@ function startGame() {
     }
     startButton.disabled = true;
     score = 0;
-    timeLeft = 90;
+    timeLeft = 100;
     matchedPairs = 0;
     flippedCards = [];
     gameActive = true;
@@ -225,6 +241,9 @@ function startGame() {
     scoreDisplay.textContent = `Score: ${score}`;
     timerDisplay.textContent = `Time: ${timeLeft}s`;
     messageDisplay.textContent = '';
+    highScoreMessageDisplay.textContent = ''; // Clear high score message on game start
+    highScoreMessageDisplay.classList.remove('high-score', 'game-won', 'top-score-won');
+    topScorerImageDisplay.innerHTML = '';
     createCards();
     startTimer();
 }
