@@ -148,30 +148,97 @@ h1 {
     border: 1px solid #666;
 }
 
-/* Style the message */
-#message {
+/* Style the high score/win message */
+#high-score-message {
     color: #fff;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     margin: 20px 0;
 }
 
-/* Style the game over message */
-#message.game-over-message {
-    position: absolute; /* Position over the game board */
-    top: 50%; /* Center vertically */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Adjust for the element's own size */
-    font-size: 2.5em; /* Larger font size (40px) */
-    color: #ff0000; /* Bright red color for the game over message */
-    background: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+/* Style for high score message */
+#high-score-message.high-score {
+    position: absolute;
+    top: 40%; /* Position higher than the game over message */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5em;
+    background: rgba(0, 0, 0, 0.7);
     padding: 20px;
     border-radius: 10px;
-    z-index: 10; /* Ensure it appears above the cards */
+    z-index: 10;
     text-align: center;
-    width: 80%; /* Make it wide enough to fit the text */
-    max-width: 600px; /* Limit the width for readability */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Keep the shadow for readability */
+    width: 80%;
+    max-width: 600px;
+    color: #ffd700; /* Gold color for high score */
 }
+
+/* Style for win message */
+#high-score-message.game-won {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5em;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 10;
+    text-align: center;
+    width: 80%;
+    max-width: 600px;
+    color: #00ff00; /* Green color for win */
+}
+
+/* Style for win + high score message */
+#high-score-message.top-score-won {
+    position: absolute;
+    top: 30%; /* Adjusted to make room for the image below */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5em;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 10;
+    text-align: center;
+    width: 80%;
+    max-width: 600px;
+    color: #ff00ff;
+}
+
+/* Style the top scorer image */
+#top-scorer-image {
+    position: absolute;
+    top: 65%; /* Position below the high score message */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.top-scorer-award {
+    width: 300px; /* Adjust size as needed */
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+#message.game-over-message {
+    position: absolute;
+    top: 65%; /* Adjusted to be below the image */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5em;
+    color: #ff0000;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 10;
+    text-align: center;
+    width: 80%;
+    max-width: 600px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
 
 /* Sidebar to stack rules and scoreboard vertically */
 .sidebar {
