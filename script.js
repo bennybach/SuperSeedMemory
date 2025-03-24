@@ -12,6 +12,7 @@ const matchSound = document.getElementById('matchSound');
 const countdownSound = document.getElementById('countdownSound');
 const gameOverSound = document.getElementById('gameOverSound');
 const victorySound = document.getElementById('victorySound');
+const backgroundMusic = document.getElementById('backgroundMusic');
 const toggleAudioButton = document.getElementById('toggleAudioButton');
 
 let cards = [];
@@ -24,6 +25,7 @@ let scoreboard = JSON.parse(localStorage.getItem('scoreboard')) || [];
 let gameActive = true;
 let audioEnabled = true;
 let countdownSoundPlaying = false;
+let backgroundMusicPlaying = false;
 
 const cryptocurrencies = [
     'bitcoin', 'ethereum', 'binance-coin', 'cardano', 'solana', 
@@ -49,11 +51,19 @@ const cryptoCount = cryptoPairs * 2;
 toggleAudioButton.addEventListener('click', () => {
     audioEnabled = !audioEnabled;
     toggleAudioButton.textContent = audioEnabled ? 'Turn Off Audio Effects' : 'Turn On Audio Effects';
-    // Stop countdown sound if audio is disabled while it's playing
-    if (!audioEnabled && countdownSoundPlaying) {
-        countdownSound.pause();
-        countdownSound.currentTime = 0;
-        countdownSoundPlaying = false;
+    // Stop background music and countdown sound if audio is disabled
+    if (!audioEnabled) {
+        if (backgroundMusicPlaying && backgroundMusic) {
+            backgroundMusic.pause();
+            backgroundMusic.currentTime = 0;
+            backgroundMusicPlaying = false;
+            console.log('Background music paused due to audio toggle');
+        }
+        if (countdownSoundPlaying) {
+            countdownSound.pause();
+            countdownSound.currentTime = 0;
+            countdownSoundPlaying = false;
+        }
     }
 });
 
@@ -92,7 +102,7 @@ function createCards() {
         const front = document.createElement('div');
         front.classList.add('card-front');
 
-        const img = document.createElement('img'); // Fixed syntax error
+        const img = document.createElement('img');
         if (card.type === 'seed') {
             img.src = 'seed.png';
             img.alt = 'Seed Card';
@@ -182,6 +192,20 @@ function updateScore(type) {
 }
 
 function startTimer() {
+    // Start background music when the timer starts
+    if (audioEnabled && !backgroundMusicPlaying && backgroundMusic) {
+        console.log('Attempting to play background music');
+        backgroundMusic.currentTime = 0;
+        backgroundMusic.play().then(() => {
+            console.log('Background music started successfully');
+            backgroundMusicPlaying = true;
+        }).catch(error => {
+            console.log('Error playing background music:', error);
+        });
+    } else if (!backgroundMusic) {
+        console.error('Cannot play background music: backgroundMusic element is null');
+    }
+
     timer = setInterval(() => {
         timeLeft--;
         timerDisplay.textContent = `Time: ${timeLeft}s`;
@@ -196,28 +220,39 @@ function startTimer() {
         }
 
         if (timeLeft <= 0) {
-            // Stop countdown sound when timer reaches 0
+            // Stop countdown sound and background music when timer reaches 0
             if (countdownSoundPlaying) {
                 countdownSound.pause();
                 countdownSound.currentTime = 0;
                 countdownSoundPlaying = false;
+            }
+            if (backgroundMusicPlaying && backgroundMusic) {
+                backgroundMusic.pause();
+                backgroundMusic.currentTime = 0;
+                backgroundMusicPlaying = false;
+                console.log('Background music stopped at timer 0');
             }
             endGame(false);
         }
     }, 1000);
 }
 
-
 function endGame(won) {
     clearInterval(timer);
     gameActive = false;
     gameBoard.classList.add('game-over');
     startButton.disabled = false;
-    // Stop countdown sound if the game ends early (e.g., by winning)
+    // Stop countdown sound and background music if the game ends
     if (countdownSoundPlaying) {
         countdownSound.pause();
         countdownSound.currentTime = 0;
         countdownSoundPlaying = false;
+    }
+    if (backgroundMusicPlaying && backgroundMusic) {
+        backgroundMusic.pause();
+        backgroundMusic.currentTime = 0;
+        backgroundMusicPlaying = false;
+        console.log('Background music stopped at game end');
     }
     const username = usernameInput.value.trim() || 'Anonymous';
 
@@ -310,7 +345,8 @@ function startGame() {
     highScoreMessageDisplay.textContent = '';
     highScoreMessageDisplay.classList.remove('high-score', 'game-won', 'top-score-won');
     topScorerImageDisplay.innerHTML = '';
-    countdownSoundPlaying = false; // Reset countdown sound state
+    countdownSoundPlaying = false;
+    backgroundMusicPlaying = false;
     createCards();
     startTimer();
 }
