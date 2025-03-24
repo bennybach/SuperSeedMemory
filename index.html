@@ -12,7 +12,7 @@
         <div class="controls">
             <input type="text" id="username" placeholder="Enter your username">
             <button id="startButton">Start Game</button>
-            <div id="timer">Time: 90s</div>
+            <div id="timer">Time: 300s</div>
             <div id="score">Score: 0</div>
         </div>
         <div class="game-wrapper">
@@ -20,7 +20,7 @@
             <div class="sidebar">
                 <div class="rules">
                     <h2>Rules</h2>
-                    <p>Get as many points in 90 seconds by finding the Seeds and the Super Seeds on the board.</p>
+                    <p>Get as many points in 100 seconds by finding the Seeds and the Super Seeds on the board.</p>
                     <p>Each pair of Seeds grants you 3 seconds extra time and 3 points.</p>
                     <p>Each pair of Super Seeds grants you 15 seconds extra time and 10 points.</p>
                     <p>All other cryptocurrencies are worth 1 point and grant no extra time.</p>
@@ -32,6 +32,8 @@
                 </div>
             </div>
         </div>
+        <div id="high-score-message"></div> <!-- New div for high score/win messages -->
+	<div id="top-scorer-image"></div>
         <div id="message"></div>
     </div>
     <script src="script.js"></script>
