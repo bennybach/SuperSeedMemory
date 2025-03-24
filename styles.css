@@ -155,6 +155,22 @@ h1 {
     margin: 20px 0;
 }
 
+/* Style the game over message */
+#message.game-over-message {
+    position: absolute; /* Position over the game board */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust for the element's own size */
+    font-size: 2.5em; /* Larger font size (40px) */
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 10; /* Ensure it appears above the cards */
+    text-align: center;
+    width: 80%; /* Make it wide enough to fit the text */
+    max-width: 600px; /* Limit the width for readability */
+}
+
 /* Sidebar to stack rules and scoreboard vertically */
 .sidebar {
     display: flex;
@@ -223,20 +239,13 @@ h1 {
     opacity: 0.5;
 }
 
-/* Style the game over message */
 #message.game-over-message {
-    position: absolute; /* Position over the game board */
-    top: 50%; /* Center vertically */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Adjust for the element's own size */
-    font-size: 2.5em; /* Larger font size (40px) */
-    background: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
-    padding: 20px;
-    border-radius: 10px;
-    z-index: 10; /* Ensure it appears above the cards */
-    text-align: center;
-    width: 80%; /* Make it wide enough to fit the text */
-    max-width: 600px; /* Limit the width for readability */
+    font-size: 44px;
+    font-weight: bold;
+    color: #FF0000;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 5px;
 }
 
 /* Animations */
