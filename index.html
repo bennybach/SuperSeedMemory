@@ -12,6 +12,7 @@
         <div class="controls">
             <input type="text" id="username" placeholder="Enter your username">
             <button id="startButton">Start Game</button>
+            <button id="toggleAudioButton">Turn Off Audio Effects</button>
             <div id="timer">Time: 100s</div>
             <div id="score">Score: 0</div>
         </div>
@@ -36,6 +37,11 @@
 	<div id="top-scorer-image"></div>
         <div id="message"></div>
     </div>
+    <audio id="cardClickSound" src="card-click.mp3" preload="auto"></audio>
+    <audio id="matchSound" src="match-sound.mp3" preload="auto"></audio>
+    <audio id="countdownSound" src="countdown-sound.mp3" preload="auto"></audio>
+    <audio id="gameOverSound" src="game-over-sound.mp3" preload="auto"></audio>
+    <audio id="victorySound" src="victory-sound.mp3" preload="auto"></audio>
     <script src="script.js"></script>
 </body>
 </html>

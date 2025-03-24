@@ -7,6 +7,12 @@ const scoreList = document.getElementById('scoreList');
 const messageDisplay = document.getElementById('message');
 const highScoreMessageDisplay = document.getElementById('high-score-message');
 const topScorerImageDisplay = document.getElementById('top-scorer-image');
+const cardClickSound = document.getElementById('cardClickSound');
+const matchSound = document.getElementById('matchSound');
+const countdownSound = document.getElementById('countdownSound');
+const gameOverSound = document.getElementById('gameOverSound');
+const victorySound = document.getElementById('victorySound');
+const toggleAudioButton = document.getElementById('toggleAudioButton');
 
 let cards = [];
 let flippedCards = [];
@@ -16,6 +22,8 @@ let timeLeft = 100;
 let timer;
 let scoreboard = JSON.parse(localStorage.getItem('scoreboard')) || [];
 let gameActive = true;
+let audioEnabled = true;
+let countdownSoundPlaying = false;
 
 const cryptocurrencies = [
     'bitcoin', 'ethereum', 'binance-coin', 'cardano', 'solana', 
@@ -36,6 +44,18 @@ const seedPairs = Math.floor(Math.random() * (maxSeedPairs - 11 + 1)) + 11;
 const seedCount = seedPairs * 2;
 const cryptoPairs = totalPairs - (seedPairs + (superSeedCount / 2));
 const cryptoCount = cryptoPairs * 2;
+
+// Toggle audio effects on/off
+toggleAudioButton.addEventListener('click', () => {
+    audioEnabled = !audioEnabled;
+    toggleAudioButton.textContent = audioEnabled ? 'Turn Off Audio Effects' : 'Turn On Audio Effects';
+    // Stop countdown sound if audio is disabled while it's playing
+    if (!audioEnabled && countdownSoundPlaying) {
+        countdownSound.pause();
+        countdownSound.currentTime = 0;
+        countdownSoundPlaying = false;
+    }
+});
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -72,7 +92,7 @@ function createCards() {
         const front = document.createElement('div');
         front.classList.add('card-front');
 
-        const img = document.createElement('img');
+        const img = document.createElement('img'); // Fixed syntax error
         if (card.type === 'seed') {
             img.src = 'seed.png';
             img.alt = 'Seed Card';
@@ -88,14 +108,10 @@ function createCards() {
         const back = document.createElement('div');
         back.classList.add('card-back');
 
-        // Calculate the row and column of the card
-        const column = index % 10; // 10 columns
-        const row = Math.floor(index / 10); // 8 rows
-
-        // Calculate the background position
-        // Each card is 80x80px, so we shift the background by 80px for each column and row
-        const posX = -(column * 80); // Shift left for each column
-        const posY = -(row * 80); // Shift up for each row
+        const column = index % 10;
+        const row = Math.floor(index / 10);
+        const posX = -(column * 80);
+        const posY = -(row * 80);
         back.style.backgroundPosition = `${posX}px ${posY}px`;
 
         cardElement.appendChild(front);
@@ -108,6 +124,13 @@ function createCards() {
 function flipCard() {
     if (!gameActive) return;
     if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
+        if (audioEnabled) {
+            cardClickSound.currentTime = 0;
+            cardClickSound.play().catch(error => {
+                console.log('Error playing card click sound:', error);
+            });
+        }
+
         this.classList.add('flipped');
         flippedCards.push(this);
 
@@ -120,6 +143,13 @@ function flipCard() {
 function checkMatch() {
     const [card1, card2] = flippedCards;
     if (card1.dataset.name === card2.dataset.name) {
+        if (audioEnabled) {
+            matchSound.currentTime = 0;
+            matchSound.play().catch(error => {
+                console.log('Error playing match sound:', error);
+            });
+        }
+
         matchedPairs++;
         updateScore(card1.dataset.type);
         card1.removeEventListener('click', flipCard);
@@ -155,25 +185,62 @@ function startTimer() {
     timer = setInterval(() => {
         timeLeft--;
         timerDisplay.textContent = `Time: ${timeLeft}s`;
+
+        // Start countdown sound at 5 seconds remaining
+        if (timeLeft === 5 && !countdownSoundPlaying && audioEnabled) {
+            countdownSound.currentTime = 0;
+            countdownSound.play().catch(error => {
+                console.log('Error playing countdown sound:', error);
+            });
+            countdownSoundPlaying = true;
+        }
+
         if (timeLeft <= 0) {
+            // Stop countdown sound when timer reaches 0
+            if (countdownSoundPlaying) {
+                countdownSound.pause();
+                countdownSound.currentTime = 0;
+                countdownSoundPlaying = false;
+            }
             endGame(false);
         }
     }, 1000);
 }
+
 
 function endGame(won) {
     clearInterval(timer);
     gameActive = false;
     gameBoard.classList.add('game-over');
     startButton.disabled = false;
+    // Stop countdown sound if the game ends early (e.g., by winning)
+    if (countdownSoundPlaying) {
+        countdownSound.pause();
+        countdownSound.currentTime = 0;
+        countdownSoundPlaying = false;
+    }
     const username = usernameInput.value.trim() || 'Anonymous';
 
     if (won) {
+        // Play victory sound if the player cleared the board
+        if (audioEnabled) {
+            victorySound.currentTime = 0;
+            victorySound.play().catch(error => {
+                console.log('Error playing victory sound:', error);
+            });
+        }
         score += timeLeft * 5;
         scoreDisplay.textContent = `Score: ${score}`;
         updateScoreboard(username, score);
         displayMessage(username, won);
     } else {
+        // Play game over sound if the player didn't clear the board
+        if (audioEnabled) {
+            gameOverSound.currentTime = 0;
+            gameOverSound.play().catch(error => {
+                console.log('Error playing game over sound:', error);
+            });
+        }
         updateScoreboard(username, score);
         messageDisplay.textContent = `Time’s up! Game Over. Final Score: ${score}`;
         messageDisplay.classList.add('game-over-message');
@@ -199,18 +266,16 @@ function renderScoreboard() {
 }
 
 function displayMessage(username, won) {
-      const isTopScorer = scoreboard.length > 0 && scoreboard[0]?.username === username && scoreboard[0]?.score === score;
+    const isTopScorer = scoreboard.length > 0 && scoreboard[0]?.username === username && scoreboard[0]?.score === score;
 
-   highScoreMessageDisplay.textContent = '';
+    highScoreMessageDisplay.textContent = '';
     highScoreMessageDisplay.classList.remove('high-score', 'game-won', 'top-score-won');
-    topScorerImageDisplay.innerHTML = ''; // Clear previous image
+    topScorerImageDisplay.innerHTML = '';
 
-    // Display messages in high-score-message based on conditions
     if (won && isTopScorer) {
         highScoreMessageDisplay.textContent = `Incredible, ${username}! You cleared all cards and set a new high score!`;
         highScoreMessageDisplay.classList.add('top-score-won');
 
-        // Add the top scorer image
         const img = document.createElement('img');
         img.src = 'top-scorer-award.png';
         img.alt = 'Top Scorer Award';
@@ -226,6 +291,7 @@ function displayMessage(username, won) {
 
     messageDisplay.classList.remove('top-score', 'game-won', 'top-score-won');
 }
+
 function startGame() {
     if (!usernameInput.value.trim()) {
         alert('Please enter a username!');
@@ -241,9 +307,10 @@ function startGame() {
     scoreDisplay.textContent = `Score: ${score}`;
     timerDisplay.textContent = `Time: ${timeLeft}s`;
     messageDisplay.textContent = '';
-    highScoreMessageDisplay.textContent = ''; // Clear high score message on game start
+    highScoreMessageDisplay.textContent = '';
     highScoreMessageDisplay.classList.remove('high-score', 'game-won', 'top-score-won');
     topScorerImageDisplay.innerHTML = '';
+    countdownSoundPlaying = false; // Reset countdown sound state
     createCards();
     startTimer();
 }

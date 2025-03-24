@@ -76,6 +76,22 @@ h1 {
     cursor: not-allowed;
 }
 
+/* Style the toggle audio button */
+#toggleAudioButton {
+    padding: 5px 10px;
+    font-size: 1em;
+    background-color: #ff4444; /* Red background to indicate "off" action */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+#toggleAudioButton:hover {
+    background-color: #cc0000; /* Darker red on hover */
+}
+
 #timer, #score {
     font-size: 1.5em;
     color: #f0f0f0;
